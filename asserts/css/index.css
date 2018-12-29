@@ -1,0 +1,11 @@
+.j-container {
+	margin-left: 0px;
+	margin-top: 150px;
+	width: 340px;
+	height: 340px;
+	overflow: hidden;
+}
+.j-take-photo {
+	margin-left: 120px;
+	margin-top: 120px;
+}
