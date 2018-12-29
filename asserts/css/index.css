@@ -1,11 +1,19 @@
 .j-container {
 	margin-left: 0px;
-	margin-top: 150px;
-	width: 340px;
-	height: 340px;
+	margin-top: 0px;
+	width: 300px;
+	height: 700px;
 	overflow: hidden;
+}
+.j-origin {
+	width: 300px;
+	height: 300px;
+}
+.j-result {
+	width: 300px;
+	height: 300px;
 }
 .j-take-photo {
 	margin-left: 120px;
-	margin-top: 120px;
+	margin-top: 80px;
 }
