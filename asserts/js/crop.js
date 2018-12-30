@@ -37,6 +37,7 @@ window.Cropper = function Cropper(opts){
 	this.imgWidth = opts.imgWidth;
 	this.imgHeight = opts.imgHeight;
 	this.ongoingTouches = [];
+	this.canvas._cropper = this;
 
 	this.canvas.addEventListener("touchstart", this.handleStart, false);
 	this.canvas.addEventListener("touchmove", this.handleMove, false);
@@ -46,6 +47,7 @@ window.Cropper = function Cropper(opts){
 };
 
 Cropper.prototype.handleStart = function (evt) {
+	var cropper = this._cropper;
 	evt.preventDefault();
 	console.log("touchstart.");
 	var el = document.getElementsByTagName("canvas")[0];
@@ -65,6 +67,7 @@ Cropper.prototype.handleStart = function (evt) {
 };
 
 Cropper.prototype.handleMove = function (evt) {
+	var cropper = this._cropper;
 	evt.preventDefault();
 	var el = document.getElementsByTagName("canvas")[0];
 	var ctx = el.getContext("2d");
@@ -94,6 +97,7 @@ Cropper.prototype.handleMove = function (evt) {
 };
 
 Cropper.prototype.touchend = function (evt) {
+	var cropper = this._cropper;
 	evt.preventDefault();
 	log("touchend");
 	var el = document.getElementsByTagName("canvas")[0];
@@ -119,6 +123,7 @@ Cropper.prototype.touchend = function (evt) {
 };
 
 Cropper.prototype.handleCancel = function (evt) {
+	var cropper = this._cropper;
 	evt.preventDefault();
 	console.log("touchcancel.");
 	var touches = evt.changedTouches;
