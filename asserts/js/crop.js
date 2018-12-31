@@ -141,11 +141,11 @@ Cropper.prototype.handleMove = function(evt) {
             var deltaY = touch.pageY - ongoingTouche.pageY;
 
             console.log('clearRect');
-            ctx.save();
-            console.log(cropper.originX - cropper.curOriginX, cropper.originY - cropper.curOriginY)
-            ctx.translate(cropper.originX - cropper.curOriginX, cropper.originY - cropper.curOriginY);
-            ctx.clearRect(0, 0, cropper.canvasWidth, cropper.canvasHeight);
-            ctx.restore();
+            // ctx.save();
+            // console.log(cropper.originX - cropper.curOriginX, cropper.originY - cropper.curOriginY)
+            // ctx.translate(cropper.originX - cropper.curOriginX, cropper.originY - cropper.curOriginY);
+            ctx.clearRect(0, 0, cropper.imgWidth, cropper.imgHeight);
+            // ctx.restore();
             console.log('clearRect done');
 
             console.log('drawImage');
