@@ -171,13 +171,13 @@ Cropper.prototype.handleMove = function(evt) {
 		}
 		pageX = 0;
 		pageY = 0;
-		for(var i = 0; i < cropper.ongoingTouche.length; ++i){
-			pageX += cropper.ongoingTouche[i].pageX;
-			pageY += cropper.ongoingTouche[i].pageY;
+		for(var i = 0; i < cropper.ongoingTouches.length; ++i){
+			pageX += cropper.ongoingTouches[i].pageX;
+			pageY += cropper.ongoingTouches[i].pageY;
 		}
 		var preMidPoint = {
-			pageX: pageX / cropper.ongoingTouche.length,
-			pageY: pageY / cropper.ongoingTouche.length
+			pageX: pageX / cropper.ongoingTouches.length,
+			pageY: pageY / cropper.ongoingTouches.length
 		}
 		var deltaX = curMidPoint.pageX - preMidPoint.pageX;
 		var deltaY = curMidPoint.pageY - preMidPoint.pageY;
