@@ -6,7 +6,6 @@ function colorForTouch(touch) {
 	g = g.toString(16); // make it a hex digit
 	b = b.toString(16); // make it a hex digit
 	var color = "#" + r + g + b;
-	console.log("color for touch with identifier " + touch.identifier + " = " + color);
 	return color;
 }
 
@@ -112,24 +111,15 @@ Cropper.prototype.handleStart = function(evt) {
 
 	evt.preventDefault();
 	var cropper = this._cropper;
-	console.log("touchstart.");
+	console.log("handleStart trigger");
 	var el = cropper.canvas;
 	var ctx = el.getContext("2d");
 	var touches = evt.changedTouches;
 
 	for (var i = 0; i < touches.length; i++) {
-		console.log(i, 'handleStart: identifier', touches[i].identifier);
-		/*touchend事件不觸發，這裡需要刪除老的touch對象*/
-		var tmpOngoingTouches = [];
-		for(var j = 0; j < cropper.ongoingTouches.length; ++j){
-			if(cropper.ongoingTouches[j].identifier !== touches[i].identifier){
-				tmpOngoingTouches.push(cropper.ongoingTouches[j]);
-			}
-		}
-		cropper.ongoingTouches = tmpOngoingTouches;
 		if (cropper.ongoingTouchIndexById(touches[i].identifier) === -1) {
 			cropper.ongoingTouches.push(cropper.copyTouch(touches[i]));
-			console.log("touchstart:" + i + ".");
+
 		}
 	}
 };
@@ -138,31 +128,22 @@ Cropper.prototype.handleMove = function(evt) {
 
 	evt.preventDefault();
 	var cropper = this._cropper;
+	console.log("handleMove trigger");
 	var canvas = cropper.canvas;
 	var ctx = canvas.getContext("2d");
 	var touches = evt.changedTouches;
 
-	for (var i = 0; i < touches.length; i++) {
-		console.log('handleMove: identifier', touches[i].identifier);
-		var idx = cropper.ongoingTouchIndexById(touches[i].identifier);
+	/*單手*/
+	if(touches.length == 1){
+		var touchA = touches[0];
+		var idx = cropper.ongoingTouchIndexById(touchA.identifier);
 		if (idx >= 0) {
-			console.log('handleMove idx:', idx);
 			var ongoingTouche = cropper.ongoingTouches[idx];
-			var touch = touches[i];
+			var touch =touchA;
 			var deltaX = touch.pageX - ongoingTouche.pageX;
 			var deltaY = touch.pageY - ongoingTouche.pageY;
-
-			console.log('clearRect');
 			ctx.clearRect(0, 0, cropper.imgWidth, cropper.imgHeight);
-			console.log('clearRect done');
-
-			console.log('drawImage');
-			console.log(cropper.originX, cropper.originX);
-			console.log(deltaX, deltaY);
-			console.log(cropper.originX + deltaX, cropper.originX + deltaY);
 			ctx.translate(cropper.originX + deltaX, cropper.originX + deltaY);
-			// cropper.curOriginX = cropper.originX + deltaX;
-			// cropper.curOriginY = cropper.originY + deltaY;
 			ctx.drawImage(
 				cropper.img,
 				0, 0,
@@ -170,18 +151,23 @@ Cropper.prototype.handleMove = function(evt) {
 				0, 0,
 				cropper.imgWidth, cropper.imgHeight
 			);
-			console.log('drawImage done');
-			cropper.ongoingTouches.splice(idx, 1, cropper.copyTouch(touches[i])); // swap in the new touch record
-
+			cropper.ongoingTouches.splice(idx, 1, cropper.copyTouch(touchA)); // swap in the new touch record
 		} else {
 			console.log("can't figure out which touch to continue");
+		}
+	}else if(touches.length == 2){
+		var touchA = touches[0];
+		var touchB = touches[1];
+		var midPoint = {
+			pageX: (touchA.pageX + touchB.pageX) / 2,
+			pageY: (touchA.pageY + touchB.pageY) / 2
 		}
 	}
 };
 
-Cropper.prototype.touchend = function(evt) {
-	debugger
-	console.log('touchend trigger')
+Cropper.prototype.handleEnd = function(evt) {
+
+	console.log('handleEnd trigger')
 	evt.preventDefault();
 	var cropper = this._cropper;
 	var el = cropper.canvas;
@@ -193,7 +179,6 @@ Cropper.prototype.touchend = function(evt) {
 		var idx = cropper.ongoingTouchIndexById(touches[i].identifier);
 
 		if (idx >= 0) {
-			console.log('find end touch')
 			cropper.ongoingTouches.splice(idx, 1); // remove it; we're done
 		} else {
 			console.log("can't figure out which touch to end");
@@ -205,7 +190,7 @@ Cropper.prototype.handleCancel = function(evt) {
 
 	evt.preventDefault();
 	var cropper = this._cropper;
-	console.log("touchcancel.");
+	console.log("handleCancel trigger");
 	var touches = evt.changedTouches;
 
 	for (var i = 0; i < touches.length; i++) {
