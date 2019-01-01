@@ -35,6 +35,8 @@ Cropper.prototype.init = function(opts) {
 		that.originY = 0;
 		that.curOriginX = 0;
 		that.curOriginY = 0;
+		that.startX = 0;
+		that.startY = 0;
 
 		if (!that.canvas) {
 			reject('no canvas');
@@ -161,13 +163,13 @@ Cropper.prototype.handleMove = function(evt) {
 		}
 		var deltaX = curMidPoint.pageX - preMidPoint.pageX;
 		var deltaY = curMidPoint.pageY - preMidPoint.pageY;
-		ctx.clearRect(0, 0, cropper.imgWidth, cropper.imgHeight);
-		ctx.translate(cropper.originX + deltaX, cropper.originX + deltaY);
+		ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
+		ctx.translate(deltaX, deltaY);
 		ctx.drawImage(
 			cropper.img,
 			0, 0,
 			cropper.imgWidth, cropper.imgHeight,
-			0, 0,
+			cropper.startX, cropper.startY,
 			cropper.imgWidth, cropper.imgHeight
 		);
 
@@ -184,10 +186,41 @@ Cropper.prototype.handleMove = function(evt) {
 			var curDistance = Math.pow(Math.pow(curTouchA.pageX - curTouchB.pageX, 2) +  Math.pow(curTouchA.pageY - curTouchB.pageY, 2), 0.5); 
 			var preDistance = Math.pow(Math.pow(preTouchA.pageX - preTouchB.pageX, 2) +  Math.pow(preTouchA.pageY - preTouchB.pageY, 2), 0.5); 
 			var scale = curDistance / preDistance;
+			var curMidTouch = {
+				pageX: (curTouchA.pageX + curTouchB.pageX) / 2,
+				pageY: (curTouchA.pageY + curTouchB.pageY) / 2
+			}
+
+			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
+			ctx.translate(curMidTouch.pageX, curMidTouch.pageY);
 			ctx.scale(scale, scale);
+			ctx.drawImage(
+				cropper.img,
+				0, 0,
+				cropper.imgWidth, cropper.imgHeight,
+				-curMidTouch.pageX, -curMidTouch.pageY,
+				cropper.imgWidth, cropper.imgHeight
+			);
+			ctx.translate(-curMidTouch.pageX, -curMidTouch.pageY);
+
 		}
 
 	}
+
+
+	// ctx.clearRect(0, 0, cropper.imgWidth, cropper.imgHeight);
+	// // ctx.save();
+	// ctx.translate(50, 50);
+	// ctx.scale(1.1, 1.1);
+	// ctx.drawImage(
+	// 	cropper.img,
+	// 	0, 0,
+	// 	cropper.imgWidth, cropper.imgHeight,
+	// 	-50, -50,
+	// 	cropper.imgWidth, cropper.imgHeight
+	// );
+	// ctx.translate(-50, -50);
+	// ctx.restore();
 
 	for(var i = 0; i < touches.length; ++i){
 		var idx = cropper.ongoingTouchIndexById(touches[i].identifier);
