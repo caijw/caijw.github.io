@@ -133,6 +133,50 @@ Cropper.prototype.handleMove = function(evt) {
 	var ctx = canvas.getContext("2d");
 	var touches = evt.changedTouches;
 
+
+	/*move*/
+	var pageX = 0, pageY = 0;
+	for(var i = 0; i < touches.length; ++i){
+		pageX += touches[i].pageX;
+		pageY += touches[i].pageY;
+	}
+	var touchA = touches[0];
+	var touchB = touches[1];
+
+	var curMidPoint = {
+		pageX: pageX / touches.length,
+		pageY: pageY / touches.length
+	}
+	pageX = 0;
+	pageY = 0;
+	for(var i = 0; i < cropper.ongoingTouches.length; ++i){
+		pageX += cropper.ongoingTouches[i].pageX;
+		pageY += cropper.ongoingTouches[i].pageY;
+	}
+	var preMidPoint = {
+		pageX: pageX / cropper.ongoingTouches.length,
+		pageY: pageY / cropper.ongoingTouches.length
+	}
+	var deltaX = curMidPoint.pageX - preMidPoint.pageX;
+	var deltaY = curMidPoint.pageY - preMidPoint.pageY;
+	ctx.clearRect(0, 0, cropper.imgWidth, cropper.imgHeight);
+	ctx.translate(cropper.originX + deltaX, cropper.originX + deltaY);
+	ctx.drawImage(
+		cropper.img,
+		0, 0,
+		cropper.imgWidth, cropper.imgHeight,
+		0, 0,
+		cropper.imgWidth, cropper.imgHeight
+	);
+	for(var i = 0; i < touches.length; ++i){
+		var idx = cropper.ongoingTouchIndexById(touches[i].identifier);
+		if(idx >= 0){
+			cropper.ongoingTouches.splice(idx, 1, cropper.copyTouch(touches[i]));
+		}
+	}
+
+	return;
+
 	/*單手*/
 	if(touches.length == 1){
 		var touchA = touches[0];
