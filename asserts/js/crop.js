@@ -141,19 +141,16 @@ Cropper.prototype.handleMove = function(evt) {
             var deltaY = touch.pageY - ongoingTouche.pageY;
 
             console.log('clearRect');
-            // ctx.save();
-            // console.log(cropper.originX - cropper.curOriginX, cropper.originY - cropper.curOriginY)
-            // ctx.translate(cropper.originX - cropper.curOriginX, cropper.originY - cropper.curOriginY);
             ctx.clearRect(0, 0, cropper.imgWidth, cropper.imgHeight);
-            // ctx.restore();
             console.log('clearRect done');
 
             console.log('drawImage');
+            console.log(cropper.originX, cropper.originX);
             console.log(deltaX, deltaY);
-            console.log(cropper.originX + deltaX, cropper.originX + deltaY)
+            console.log(cropper.originX + deltaX, cropper.originX + deltaY);
             ctx.translate(cropper.originX + deltaX, cropper.originX + deltaY);
-            cropper.curOriginX = cropper.originX + deltaX;
-            cropper.curOriginY = cropper.originY + deltaY;
+            // cropper.curOriginX = cropper.originX + deltaX;
+            // cropper.curOriginY = cropper.originY + deltaY;
             ctx.drawImage(
             	cropper.img,
             	0, 0,
@@ -171,10 +168,10 @@ Cropper.prototype.handleMove = function(evt) {
 };
 
 Cropper.prototype.touchend = function(evt) {
-
+	debugger
+	console.log('touchend trigger')
     evt.preventDefault();
     var cropper = this._cropper;
-    log("touchend");
     var el = cropper.canvas;
     var ctx = el.getContext("2d");
     var touches = evt.changedTouches;
@@ -184,13 +181,12 @@ Cropper.prototype.touchend = function(evt) {
         var idx = cropper.ongoingTouchIndexById(touches[i].identifier);
 
         if (idx >= 0) {
-            ctx.lineWidth = 4;
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.moveTo(cropper.ongoingTouches[idx].pageX, cropper.ongoingTouches[idx].pageY);
-            ctx.lineTo(touches[i].pageX, touches[i].pageY);
-            ctx.fillRect(touches[i].pageX - 4, touches[i].pageY - 4, 8, 8); // and a square at the end
+        	console.log('find end touch')
             cropper.ongoingTouches.splice(idx, 1); // remove it; we're done
+            if(cropper.ongoingTouches.length === 0){
+            	// cropper.originX = 0;
+            	// cropper.originY = 0;
+            }
         } else {
             console.log("can't figure out which touch to end");
         }
@@ -198,7 +194,7 @@ Cropper.prototype.touchend = function(evt) {
 };
 
 Cropper.prototype.handleCancel = function(evt) {
-
+	
     evt.preventDefault();
     var cropper = this._cropper;
     console.log("touchcancel.");
