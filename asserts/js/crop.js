@@ -180,6 +180,9 @@ Cropper.prototype.handleMove = function(evt) {
 			cropper.startX, cropper.startY,
 			cropper.imgWidth, cropper.imgHeight
 		);
+		cropper.originX = cropper.originX + deltaX;
+		cropper.originY = cropper.originY + deltaY;
+
 
 	}else if(touches.length == 2){
 		console.log('handleMove, scale');
@@ -196,8 +199,8 @@ Cropper.prototype.handleMove = function(evt) {
 			var scale = curDistance / preDistance;
 			/*需要相对cancas左上角的坐标*/
 			var curMidTouch = {
-				x: (curTouchA.pageX + curTouchB.pageX) / 2 - cropper.canvasLeft,
-				y: (curTouchA.pageY + curTouchB.pageY) / 2 - cropper.canvasTop
+				x: (curTouchA.pageX + curTouchB.pageX) / 2 - cropper.canvasLeft + cropper.originX,
+				y: (curTouchA.pageY + curTouchB.pageY) / 2 - cropper.canvasTop + cropper.originY
 			}
 			console.log('curMidTouch:', curMidTouch);
 			console.log('scale:', scale);
