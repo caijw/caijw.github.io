@@ -156,11 +156,45 @@ Cropper.prototype.handleMove = function(evt) {
 			console.log("can't figure out which touch to continue");
 		}
 	}else if(touches.length == 2){
+		/*move*/
+		var pageX = 0, pageY = 0;
+		for(var i = 0; i < touches.length; ++i){
+			pageX += touches[i].pageX;
+			pageY += touches[i].pageY;
+		}
 		var touchA = touches[0];
 		var touchB = touches[1];
-		var midPoint = {
-			pageX: (touchA.pageX + touchB.pageX) / 2,
-			pageY: (touchA.pageY + touchB.pageY) / 2
+
+		var curMidPoint = {
+			pageX: pageX / touches.length,
+			pageY: pageY / touches.length
+		}
+		pageX = 0;
+		pageY = 0;
+		for(var i = 0; i < cropper.ongoingTouche.length; ++i){
+			pageX += cropper.ongoingTouche[i].pageX;
+			pageY += cropper.ongoingTouche[i].pageY;
+		}
+		var preMidPoint = {
+			pageX: pageX / cropper.ongoingTouche.length,
+			pageY: pageY / cropper.ongoingTouche.length
+		}
+		var deltaX = curMidPoint.pageX - preMidPoint.pageX;
+		var deltaY = curMidPoint.pageY - preMidPoint.pageY;
+		ctx.clearRect(0, 0, cropper.imgWidth, cropper.imgHeight);
+		ctx.translate(cropper.originX + deltaX, cropper.originX + deltaY);
+		ctx.drawImage(
+			cropper.img,
+			0, 0,
+			cropper.imgWidth, cropper.imgHeight,
+			0, 0,
+			cropper.imgWidth, cropper.imgHeight
+		);
+		for(var i = 0; i < touches.length; ++i){
+			var idx = cropper.ongoingTouchIndexById(touches[i].identifier);
+			if(idx >= 0){
+				cropper.ongoingTouches.splice(idx, 1, cropper.copyTouch(touches[i]));
+			}
 		}
 	}
 };
