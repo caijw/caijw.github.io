@@ -135,6 +135,7 @@ Cropper.prototype.handleMove = function(evt) {
 
 	console.log('handleMove, touch num:', touches.length);
 	if(touches.length == 1){
+		console.log('handleMove, move');
 		/*move*/
 		var pageX = 0, pageY = 0;
 		for(var i = 0; i < touches.length; ++i){
@@ -171,6 +172,7 @@ Cropper.prototype.handleMove = function(evt) {
 		);
 
 	}else if(touches.length == 2){
+		console.log('handleMove, scale');
 		/*scale*/
 		var curTouchA = touches[0];
 		var curTouchB = touches[1];
