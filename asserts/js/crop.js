@@ -196,23 +196,24 @@ Cropper.prototype.handleMove = function(evt) {
 			var scale = curDistance / preDistance;
 			/*需要相对cancas左上角的坐标*/
 			var curMidTouch = {
-				pageX: (curTouchA.pageX + curTouchB.pageX) / 2 - cropper.canvasLeft,
-				pageY: (curTouchA.pageY + curTouchB.pageY) / 2 - cropper.canvasTop
+				x: (curTouchA.pageX + curTouchB.pageX) / 2 - cropper.canvasLeft,
+				y: (curTouchA.pageY + curTouchB.pageY) / 2 - cropper.canvasTop
 			}
 			console.log('curMidTouch:', curMidTouch);
 			console.log('scale:', scale);
+			console.log('canvasLeft:', cropper.canvasLeft, 'canvasTop:', cropper.canvasTop);
 			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
-			ctx.translate(curMidTouch.pageX, curMidTouch.pageY);
+			ctx.translate(curMidTouch.x, curMidTouch.y);
 			ctx.scale(scale, scale);
 
 			ctx.drawImage(
 				cropper.img,
 				0, 0,
 				cropper.imgWidth, cropper.imgHeight,
-				-curMidTouch.pageX, -curMidTouch.pageY,
+				-curMidTouch.x, -curMidTouch.y,
 				cropper.imgWidth, cropper.imgHeight
 			);
-			ctx.translate(-curMidTouch.pageX, -curMidTouch.pageY);
+			ctx.translate(-curMidTouch.x, -curMidTouch.y);
 
 		}
 
