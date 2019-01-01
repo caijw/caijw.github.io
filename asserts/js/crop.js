@@ -190,10 +190,12 @@ Cropper.prototype.handleMove = function(evt) {
 				pageX: (curTouchA.pageX + curTouchB.pageX) / 2,
 				pageY: (curTouchA.pageY + curTouchB.pageY) / 2
 			}
-
+			console.log('curMidTouch:', curMidTouch);
+			console.log('scale:', scale);
 			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
 			ctx.translate(curMidTouch.pageX, curMidTouch.pageY);
 			ctx.scale(scale, scale);
+
 			ctx.drawImage(
 				cropper.img,
 				0, 0,
