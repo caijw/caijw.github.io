@@ -20,6 +20,8 @@ window.Cropper = function Cropper(opts) {
 	opts = opts || {};
 	that.canvas = opts.canvas || null;
 	that.imgUrl = opts.imgUrl || null;
+	that.canvasTop = opts.canvasTop || 0;
+	that.canvasLeft = opts.canvasLeft || 0;
 };
 
 Cropper.prototype.init = function(opts) {
@@ -30,6 +32,11 @@ Cropper.prototype.init = function(opts) {
 		that.imgUrl = opts.imgUrl || that.imgUrl || null;
 		that.canvasWidth = that.canvas.width || 0;
 		that.canvasHeight = that.canvas.height || 0;
+		if(opts.canvas){
+			that.canvasTop = opts.canvasTop || 0;
+			that.canvasLeft = opts.canvasLeft || 0;
+		}
+
 		that.ongoingTouches = [];
 		that.originX = 0;
 		that.originY = 0;
@@ -137,6 +144,7 @@ Cropper.prototype.handleMove = function(evt) {
 
 	console.log('handleMove, touch num:', touches.length);
 	if(touches.length == 1){
+
 		console.log('handleMove, move');
 		/*move*/
 		var pageX = 0, pageY = 0;
@@ -186,9 +194,10 @@ Cropper.prototype.handleMove = function(evt) {
 			var curDistance = Math.pow(Math.pow(curTouchA.pageX - curTouchB.pageX, 2) +  Math.pow(curTouchA.pageY - curTouchB.pageY, 2), 0.5); 
 			var preDistance = Math.pow(Math.pow(preTouchA.pageX - preTouchB.pageX, 2) +  Math.pow(preTouchA.pageY - preTouchB.pageY, 2), 0.5); 
 			var scale = curDistance / preDistance;
+			/*需要相对cancas左上角的坐标*/
 			var curMidTouch = {
-				pageX: (curTouchA.pageX + curTouchB.pageX) / 2,
-				pageY: (curTouchA.pageY + curTouchB.pageY) / 2
+				pageX: (curTouchA.pageX + curTouchB.pageX) / 2 - cropper.canvasLeft,
+				pageY: (curTouchA.pageY + curTouchB.pageY) / 2 - cropper.canvasTop
 			}
 			console.log('curMidTouch:', curMidTouch);
 			console.log('scale:', scale);

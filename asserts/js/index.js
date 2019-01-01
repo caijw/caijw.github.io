@@ -24,7 +24,9 @@ var vConsole = new VConsole();
 init();
 croper = new Cropper({
 	canvas: $canvas[0],
-	imgUrl: imgUrl
+	imgUrl: imgUrl,
+	canvasLeft: $canvas.offset().left,
+	canvasTop: $canvas.offset().top
 });
 croper.init().then(function (resolve, reject) {
 	bind();
