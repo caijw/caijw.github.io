@@ -133,7 +133,7 @@ Cropper.prototype.handleMove = function(evt) {
 	var ctx = canvas.getContext("2d");
 	var touches = evt.changedTouches;
 
-
+	console.log('handleMove, touch num:', touches.length);
 	/*move*/
 	var pageX = 0, pageY = 0;
 	for(var i = 0; i < touches.length; ++i){
