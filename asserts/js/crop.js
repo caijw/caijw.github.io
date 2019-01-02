@@ -182,6 +182,8 @@ Cropper.prototype.handleMove = function(evt) {
 		);
 		cropper.originX = cropper.originX + deltaX;
 		cropper.originY = cropper.originY + deltaY;
+		console.log('deltaX:', deltaX, 'deltaY:', deltaY);
+		console.log('cropper.originX:', cropper.originX, 'cropper.originY:', cropper.originY);
 
 
 	}else if(touches.length == 2){
@@ -208,6 +210,7 @@ Cropper.prototype.handleMove = function(evt) {
 			console.log('scale:', scale);
 			console.log('canvasLeft:', cropper.canvasLeft, 'canvasTop:', cropper.canvasTop);
 			console.log('originX:', cropper.originX, 'originY:', cropper.originY);
+			console.log('translateDeltaX:', translateDeltaX, 'translateDeltaY:', translateDeltaY);
 			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
 			ctx.translate(translateDeltaX, translateDeltaY);
 			ctx.scale(scale, scale);
