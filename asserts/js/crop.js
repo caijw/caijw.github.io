@@ -127,9 +127,9 @@ Cropper.prototype.inRightArea = function (x01, x02, y01, y02) {
 	var x12 = that.canvasWidth * that.limitX.right;
 	var y11 = that.canvasHeight * that.limitY.top;
 	var y12 = that.canvasHeight * that.limitY.bottom;
-	console.log(`x01: ${x02}, x02: ${x02}, y01: ${y01}, y02: ${y02}`);
-	console.log(`x11: ${x11}, x12: ${x12}, y01: ${y11}, y02: ${y12}`);
-	
+	console.log(`x01: ${x01}, x02: ${x02}, y01: ${y01}, y02: ${y02}`);
+	console.log(`x11: ${x11}, x12: ${x12}, y11: ${y11}, y12: ${y12}`);
+
 	var zx = Math.abs(x01 + x02 -x11 - x12);
 	var x  = Math.abs(x01 - x02) + Math.abs(x11 - x12);
 	var zy = Math.abs(y01 + y02 - y11 - y12);
@@ -211,7 +211,7 @@ Cropper.prototype.handleMove = function(evt) {
 		var x02 = (cropper.originX + deltaX + cropper.imgWidth) * cropper.scale;
 		var y01 = (cropper.originY + deltaY) * cropper.scale;
 		var y02 = (cropper.originY + deltaY + cropper.imgHeight) * cropper.scale;
-		console.log(`x01: ${x02}, x02: ${x02}, y01: ${y01}, y02: ${y02}`);
+		console.log(`x01: ${x01}, x02: ${x02}, y01: ${y01}, y02: ${y02}`);
 		if(cropper.inRightArea(x01, x02, y01, y02)){
 			console.log('handleMove inRightArea');
 			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
@@ -254,7 +254,7 @@ Cropper.prototype.handleMove = function(evt) {
 			var x02 = (cropper.originX + cropper.imgWidth) * tmpScale;
 			var y01 = (cropper.originY ) * tmpScale;
 			var y02 = (cropper.originY + cropper.imgHeight) * tmpScale;
-			console.log(`x01: ${x02}, x02: ${x02}, y01: ${y01}, y02: ${y02}`);
+			console.log(`x01: ${x01}, x02: ${x02}, y01: ${y01}, y02: ${y02}`);
 			if(cropper.inRightArea(x01, x02, y01, y02)){
 				console.log('handleMove inRightArea');
 				/*需要相对cancas左上角的坐标*/
