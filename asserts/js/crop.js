@@ -143,7 +143,7 @@ Cropper.prototype.handleMove = function(evt) {
 	var touches = evt.changedTouches;
 
 	console.log('handleMove, touch num:', touches.length);
-	if(touches.length == 1){
+	if(touches.length == 1 && cropper.ongoingTouches.length == 1){
 
 		console.log('handleMove, move');
 		/*move*/
@@ -194,7 +194,7 @@ Cropper.prototype.handleMove = function(evt) {
 		console.log('cropper.originX:', cropper.originX, 'cropper.originY:', cropper.originY);
 
 
-	}else if(touches.length == 2){
+	}else if(touches.length == 2 && cropper.ongoingTouches.length == 2){
 		console.log('handleMove, scale');
 
 		for(var i = 0; i < touches.length; ++i){
