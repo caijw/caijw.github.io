@@ -228,13 +228,13 @@ Cropper.prototype.handleMove = function(evt) {
 			/*让两个touch点的中点成为坐标原点*/
 			ctx.translate(translateDeltaX, translateDeltaY);
 			ctx.scale(scale, scale);
-			ctx.drawImage(
-				cropper.img,
-				0, 0,
-				cropper.imgWidth, cropper.imgHeight,
-				-curMidTouch.x, -curMidTouch.y,
-				cropper.imgWidth, cropper.imgHeight
-			);
+			// ctx.drawImage(
+			// 	cropper.img,
+			// 	0, 0,
+			// 	cropper.imgWidth, cropper.imgHeight,
+			// 	-curMidTouch.x, -curMidTouch.y,
+			// 	cropper.imgWidth, cropper.imgHeight
+			// );
 			ctx.translate(-translateDeltaX, -translateDeltaY);
 			ctx.drawImage(
 				cropper.img,
