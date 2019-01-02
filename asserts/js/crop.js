@@ -225,6 +225,7 @@ Cropper.prototype.handleMove = function(evt) {
 			console.log('originX:', cropper.originX, 'originY:', cropper.originY);
 			console.log('translateDeltaX:', translateDeltaX, 'translateDeltaY:', translateDeltaY);
 			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
+			/*让两个touch点的中点成为坐标原点*/
 			ctx.translate(translateDeltaX, translateDeltaY);
 			ctx.scale(scale, scale);
 			ctx.drawImage(
@@ -234,7 +235,7 @@ Cropper.prototype.handleMove = function(evt) {
 				-curMidTouch.x, -curMidTouch.y,
 				cropper.imgWidth, cropper.imgHeight
 			);
-			ctx.translate(-translateDeltaX, -translateDeltaY);
+			// ctx.translate(-translateDeltaX, -translateDeltaY);
 
 		}
 
