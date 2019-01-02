@@ -69,6 +69,9 @@ Cropper.prototype.init = function(opts) {
 				that.imgWidth, that.imgHeight
 			);
 
+			that.originX = beginX;
+			that.originY = beginY;
+
 			resolve();
 		};
 		img.onerror = function(err) {
@@ -116,24 +119,25 @@ Cropper.prototype.ongoingTouchIndexById = function(idToFind) {
 	return -1;
 }
 /*
-	判断是否在合法的区域内
-	type: 0 左上角 1 右上角 2 右下角 3 左下角
+	判断是否相交
 */
-Cropper.prototype.inRightArea = function (point, type) {
+Cropper.prototype.inRightArea = function (x01, x02, y01, y02) {
 	var that = this;
-	var x1 = that.canvasWidth * that.limitX.left;
-	var x2 = that.canvasWidth * that.limitX.right;
-	var y1 = that.canvasHeight * that.limitY.top;
-	var y2 = that.canvasHeight * that.limitY.bottom;
-	if(type == 0){
-		return point.x >= x1 && point.x <= x2 && point.y >= y1 && point.y <= y2;
-	}else if(type == 1){
-		return point.x >= x1 && point.x <= x2 && point.y >= y1 && point.y <= y2;
-	}else if(type == 2){
-		return point.x >= x1 && point.x <= x2 && point.y >= y1 && point.y <= y2;
-	}else if(type == 3){
-		return point.x >= x1 && point.x <= x2 && point.y >= y1 && point.y <= y2;
+	var x11 = that.canvasWidth * that.limitX.left;
+	var x12 = that.canvasWidth * that.limitX.right;
+	var y11 = that.canvasHeight * that.limitY.top;
+	var y12 = that.canvasHeight * that.limitY.bottom;
+
+	var zx = Math.abs(x01 + x02 -x11 - x12);
+	var x  = Math.abs(x01 - x02) + Math.abs(x11 - x12);
+	var zy = Math.abs(y01 + y02 - y11 - y12);
+	var y  = Math.abs(y01 - y02) + Math.abs(y11 - y12);
+	if(zx <= x && zy <= y){
+		return 1;
+	}else{
+		return 0;
 	}
+			
 
 }
 
@@ -201,23 +205,11 @@ Cropper.prototype.handleMove = function(evt) {
 		var deltaX = curMidPoint.pageX - preMidPoint.pageX;
 		var deltaY = curMidPoint.pageY - preMidPoint.pageY;
 
-		var nextLeftTop = {
-			x: (cropper.originX + deltaX) * cropper.scale,
-			y: (cropper.originY + deltaY) * cropper.scale
-		};
-		var nextRightTop = {
-			x: (cropper.originX + deltaX + cropper.canvasWidth) * cropper.scale,
-			y: (cropper.originY + deltaY) * cropper.scale
-		};
-		var nextLeftBottom = {
-			x: (cropper.originX + deltaX) * cropper.scale,
-			y: (cropper.originY + deltaY + cropper.canvasHeight) * cropper.scale
-		};
-		var nextRightBottom = {
-			x: (cropper.originX + deltaX + cropper.canvasWidth) * cropper.scale,
-			y: (cropper.originY + deltaY + cropper.canvasHeight) * cropper.scale
-		}
-		if(cropper.inRightArea(nextLeftTop) || cropper.inRightArea(nextRightTop) || cropper.inRightArea(nextLeftBottom) || cropper.inRightArea(nextRightBottom)){
+		var x01 = (cropper.originX + deltaX) * cropper.scale;
+		var x02 = (cropper.originX + deltaX + cropper.imgWidth) * cropper.scale;
+		var y01 = (cropper.originY + deltaY) * cropper.scale;
+		var y02 = (cropper.originY + deltaY + cropper.imgHeight) * cropper.scale;
+		if(cropper.inRightArea(x01, x02, y01, y02)){
 			console.log('handleMove inRightArea');
 			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
 			ctx.translate(deltaX, deltaY);
@@ -253,43 +245,49 @@ Cropper.prototype.handleMove = function(evt) {
 			var curDistance = Math.pow(Math.pow(curTouchA.pageX - curTouchB.pageX, 2) +  Math.pow(curTouchA.pageY - curTouchB.pageY, 2), 0.5); 
 			var preDistance = Math.pow(Math.pow(preTouchA.pageX - preTouchB.pageX, 2) +  Math.pow(preTouchA.pageY - preTouchB.pageY, 2), 0.5); 
 			var scale = curDistance / preDistance;
-			/*需要相对cancas左上角的坐标*/
-			var curMidTouch = {
-				x: (curTouchA.pageX + curTouchB.pageX) / 2 - cropper.canvasLeft,
-				y: (curTouchA.pageY + curTouchB.pageY) / 2 - cropper.canvasTop
-			};
-			var translateDeltaX = curMidTouch.x - cropper.originX;
-			var translateDeltaY = curMidTouch.y - cropper.originY;
-			console.log('curMidTouch:', curMidTouch);
-			console.log('scale:', scale);
-			console.log('canvasLeft:', cropper.canvasLeft, 'canvasTop:', cropper.canvasTop);
-			console.log('originX:', cropper.originX, 'originY:', cropper.originY);
-			console.log('translateDeltaX:', translateDeltaX, 'translateDeltaY:', translateDeltaY);
-			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
-			/*让两个touch点的中点成为坐标原点*/
-			// ctx.translate(translateDeltaX, translateDeltaY);
-			ctx.scale(scale, scale);
-			cropper.scale *= scale;
-			// ctx.drawImage(
-			// 	cropper.img,
-			// 	0, 0,
-			// 	cropper.imgWidth, cropper.imgHeight,
-			// 	-curMidTouch.x, -curMidTouch.y,
-			// 	cropper.imgWidth, cropper.imgHeight
-			// );
-			// ctx.translate(-translateDeltaX, -translateDeltaY);
-			ctx.drawImage(
-				cropper.img,
-				0, 0,
-				cropper.imgWidth, cropper.imgHeight,
-				0, 0,
-				cropper.imgWidth, cropper.imgHeight
-			);
+
+			var tmpScale = cropper.scale * scale;
+			var x01 = (cropper.originX ) * tmpScale;
+			var x02 = (cropper.originX + cropper.imgWidth) * tmpScale;
+			var y01 = (cropper.originY ) * tmpScale;
+			var y02 = (cropper.originY + cropper.imgHeight) * tmpScale;
+			if(cropper.inRightArea(x01, x02, y01, y02)){
+				console.log('handleMove inRightArea');
+				/*需要相对cancas左上角的坐标*/
+				var curMidTouch = {
+					x: (curTouchA.pageX + curTouchB.pageX) / 2 - cropper.canvasLeft,
+					y: (curTouchA.pageY + curTouchB.pageY) / 2 - cropper.canvasTop
+				};
+				var translateDeltaX = curMidTouch.x - cropper.originX;
+				var translateDeltaY = curMidTouch.y - cropper.originY;
+				console.log('curMidTouch:', curMidTouch);
+				console.log('scale:', scale);
+				console.log('canvasLeft:', cropper.canvasLeft, 'canvasTop:', cropper.canvasTop);
+				console.log('originX:', cropper.originX, 'originY:', cropper.originY);
+				console.log('translateDeltaX:', translateDeltaX, 'translateDeltaY:', translateDeltaY);
+				ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
+				/*让两个touch点的中点成为坐标原点*/
+				// ctx.translate(translateDeltaX, translateDeltaY);
+				ctx.scale(scale, scale);
+				cropper.scale *= scale;
+				// ctx.drawImage(
+				// 	cropper.img,
+				// 	0, 0,
+				// 	cropper.imgWidth, cropper.imgHeight,
+				// 	-curMidTouch.x, -curMidTouch.y,
+				// 	cropper.imgWidth, cropper.imgHeight
+				// );
+				// ctx.translate(-translateDeltaX, -translateDeltaY);
+				ctx.drawImage(
+					cropper.img,
+					0, 0,
+					cropper.imgWidth, cropper.imgHeight,
+					0, 0,
+					cropper.imgWidth, cropper.imgHeight
+				);
+			}
 		}
-
 	}
-
-
 	// ctx.clearRect(0, 0, cropper.imgWidth, cropper.imgHeight);
 	// // ctx.save();
 	// ctx.translate(50, 50);
