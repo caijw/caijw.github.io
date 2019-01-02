@@ -5,8 +5,8 @@ var $canvas = null;
 var $result = $('.j-result');
 var $resultImg = $('.j-result-img');
 var imgUrl = 'https://caijw.github.io/asserts/img/Lena.jpg';
-// var imgUrl = './asserts/img/Lena.jpg';
-var imgUrl = './asserts/img/img1.png';
+var imgUrl = './asserts/img/Lena.jpg';
+// var imgUrl = './asserts/img/img1.png';
 var imgWidth = 400;
 var imgHeight = 225;
 var croper = null;
@@ -18,7 +18,8 @@ function init() {
 
 function bind() {
 	$cropBtn.on('click', function (evt) {
-		croper.crop();
+		var base64 = croper.crop();
+		$resultImg[0].src = base64;
 	});
 }
 var vConsole = new VConsole();

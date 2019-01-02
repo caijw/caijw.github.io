@@ -1,20 +1,3 @@
-function colorForTouch(touch) {
-	var r = touch.identifier % 16;
-	var g = Math.floor(touch.identifier / 3) % 16;
-	var b = Math.floor(touch.identifier / 7) % 16;
-	r = r.toString(16); // make it a hex digit
-	g = g.toString(16); // make it a hex digit
-	b = b.toString(16); // make it a hex digit
-	var color = "#" + r + g + b;
-	return color;
-}
-
-
-
-function log(msg) {
-	console.log(msg);
-}
-
 window.Cropper = function Cropper(opts) {
 	var that = this;
 	opts = opts || {};
@@ -282,9 +265,7 @@ Cropper.prototype.handleEnd = function(evt) {
 	var touches = evt.changedTouches;
 
 	for (var i = 0; i < touches.length; i++) {
-		var color = colorForTouch(touches[i]);
 		var idx = cropper.ongoingTouchIndexById(touches[i].identifier);
-
 		if (idx >= 0) {
 			cropper.ongoingTouches.splice(idx, 1); // remove it; we're done
 		} else {
@@ -308,6 +289,9 @@ Cropper.prototype.handleCancel = function(evt) {
 
 
 
-Cropper.prototype.crop = function() {
-
+Cropper.prototype.crop = function(type, quality) {
+	var that = this;
+	type = type || 'image/png';
+	quality = quality || 1.0;
+	return that.canvas.toDataURL(type, quality);
 };
