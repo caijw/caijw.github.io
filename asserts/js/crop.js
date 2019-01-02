@@ -149,11 +149,10 @@ Cropper.prototype.handleMove = function(evt) {
 		/*move*/
 		var pageX = 0, pageY = 0;
 		for(var i = 0; i < touches.length; ++i){
+			console.log('touch:' + i + ' ,identifier: ' + touches[i].identifier);
 			pageX += touches[i].pageX;
 			pageY += touches[i].pageY;
 		}
-		var touchA = touches[0];
-		var touchB = touches[1];
 
 		var curMidPoint = {
 			pageX: pageX / touches.length,
@@ -188,6 +187,11 @@ Cropper.prototype.handleMove = function(evt) {
 
 	}else if(touches.length == 2){
 		console.log('handleMove, scale');
+
+		for(var i = 0; i < touches.length; ++i){
+			console.log('touch:' + i + ' ,identifier: ' + touches[i].identifier);
+		}
+
 		/*scale*/
 		var curTouchA = touches[0];
 		var curTouchB = touches[1];
