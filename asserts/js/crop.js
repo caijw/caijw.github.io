@@ -155,7 +155,6 @@ Cropper.prototype.handleStart = function(evt) {
 	for (var i = 0; i < touches.length; i++) {
 		if (cropper.ongoingTouchIndexById(touches[i].identifier) === -1) {
 			cropper.ongoingTouches.push(cropper.copyTouch(touches[i]));
-
 		}
 	}
 };
@@ -207,9 +206,9 @@ Cropper.prototype.handleMove = function(evt) {
 		var deltaX = curMidPoint.pageX - preMidPoint.pageX;
 		var deltaY = curMidPoint.pageY - preMidPoint.pageY;
 
-		var x01 = (cropper.originX + deltaX);
+		var x01 = (cropper.originX + deltaX) * cropper.scale;
 		var x02 = (cropper.originX + deltaX + cropper.imgWidth) * cropper.scale;
-		var y01 = (cropper.originY + deltaY);
+		var y01 = (cropper.originY + deltaY) * cropper.scale;
 		var y02 = (cropper.originY + deltaY + cropper.imgHeight) * cropper.scale;
 		console.log(`x01: ${x01}, x02: ${x02}, y01: ${y01}, y02: ${y02}`);
 		if(cropper.inRightArea(x01, x02, y01, y02)){
@@ -250,9 +249,9 @@ Cropper.prototype.handleMove = function(evt) {
 			var scale = curDistance / preDistance;
 
 			var tmpScale = cropper.scale * scale;
-			var x01 = (cropper.originX );
+			var x01 = (cropper.originX ) * scale;
 			var x02 = (cropper.originX + cropper.imgWidth) * tmpScale;
-			var y01 = (cropper.originY );
+			var y01 = (cropper.originY ) * scale;
 			var y02 = (cropper.originY + cropper.imgHeight) * tmpScale;
 			console.log(`x01: ${x01}, x02: ${x02}, y01: ${y01}, y02: ${y02}`);
 			if(cropper.inRightArea(x01, x02, y01, y02)){
