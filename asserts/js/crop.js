@@ -160,13 +160,22 @@ Cropper.prototype.handleMove = function(evt) {
 		}
 		pageX = 0;
 		pageY = 0;
-		for(var i = 0; i < cropper.ongoingTouches.length; ++i){
-			pageX += cropper.ongoingTouches[i].pageX;
-			pageY += cropper.ongoingTouches[i].pageY;
+		// for(var i = 0; i < cropper.ongoingTouches.length; ++i){
+		// 	pageX += cropper.ongoingTouches[i].pageX;
+		// 	pageY += cropper.ongoingTouches[i].pageY;
+		// }
+
+		var idx = cropper.ongoingTouchIndexById(touches[0].identifier);
+		if(idx >= 0){
+			pageX += cropper.ongoingTouches[idx].pageX;
+			pageY += cropper.ongoingTouches[idx].pageY;
+		}else{
+			return;
 		}
+
 		var preMidPoint = {
-			pageX: pageX / cropper.ongoingTouches.length,
-			pageY: pageY / cropper.ongoingTouches.length
+			pageX: pageX / touches.length,
+			pageY: pageY / touches.length
 		}
 		var deltaX = curMidPoint.pageX - preMidPoint.pageX;
 		var deltaY = curMidPoint.pageY - preMidPoint.pageY;
