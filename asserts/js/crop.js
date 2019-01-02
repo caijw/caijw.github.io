@@ -5,6 +5,7 @@ window.Cropper = function Cropper(opts) {
 	that.imgUrl = opts.imgUrl || null;
 	that.canvasTop = opts.canvasTop || 0;
 	that.canvasLeft = opts.canvasLeft || 0;
+
 };
 
 Cropper.prototype.init = function(opts) {
@@ -43,8 +44,13 @@ Cropper.prototype.init = function(opts) {
 			that.canvas.addEventListener("touchmove", that.handleMove, false);
 			that.canvas.addEventListener("touchend", that.handleEnd, false);
 			that.canvas.addEventListener("touchcancel", that.handleCancel, false);
-
 			var ctx = that.canvas.getContext('2d');
+
+			var beginX =(that.canvasWidth - that.imgWidth) / 2;
+			var beginY = (that.canvasHeight - that.imgHeight) / 2;
+
+			ctx.translate(beginX, beginY);
+
 			ctx.drawImage(
 				that.img,
 				0, 0,
