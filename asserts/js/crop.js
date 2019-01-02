@@ -236,7 +236,13 @@ Cropper.prototype.handleMove = function(evt) {
 				cropper.imgWidth, cropper.imgHeight
 			);
 			ctx.translate(-translateDeltaX, -translateDeltaY);
-
+			ctx.drawImage(
+				cropper.img,
+				0, 0,
+				cropper.imgWidth, cropper.imgHeight,
+				0, 0,
+				cropper.imgWidth, cropper.imgHeight
+			);
 		}
 
 	}
