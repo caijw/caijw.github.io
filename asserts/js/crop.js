@@ -235,7 +235,7 @@ Cropper.prototype.handleMove = function(evt) {
 				-curMidTouch.x, -curMidTouch.y,
 				cropper.imgWidth, cropper.imgHeight
 			);
-			// ctx.translate(-translateDeltaX, -translateDeltaY);
+			ctx.translate(-translateDeltaX, -translateDeltaY);
 
 		}
 
