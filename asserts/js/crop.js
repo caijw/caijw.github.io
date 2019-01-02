@@ -5,6 +5,15 @@ window.Cropper = function Cropper(opts) {
 	that.imgUrl = opts.imgUrl || null;
 	that.canvasTop = opts.canvasTop || 0;
 	that.canvasLeft = opts.canvasLeft || 0;
+	that.limitX = {
+		left: 1/3,
+		right: 2/3
+	};
+	that.limitY = {
+		top: 1/3,
+		bottom: 2/3
+	};
+	that.scale = 1;
 
 };
 
@@ -28,6 +37,7 @@ Cropper.prototype.init = function(opts) {
 		that.curOriginY = 0;
 		that.startX = 0;
 		that.startY = 0;
+		that.scale = 1;
 
 		if (!that.canvas) {
 			reject('no canvas');
@@ -84,6 +94,7 @@ Cropper.prototype.uninit = function() {
 	that.ongoingTouches = [];
 	that.imgUrl = '';
 	that.canvas = null;
+	that.scale = 1;
 };
 
 Cropper.prototype.copyTouch = function(touch) {
@@ -103,6 +114,27 @@ Cropper.prototype.ongoingTouchIndexById = function(idToFind) {
 		}
 	}
 	return -1;
+}
+/*
+	判断是否在合法的区域内
+	type: 0 左上角 1 右上角 2 右下角 3 左下角
+*/
+Cropper.prototype.inRightArea = function (point, type) {
+	var that = this;
+	var x1 = that.canvasWidth * that.limitX.left;
+	var x2 = that.canvasWidth * that.limitX.right;
+	var y1 = that.canvasHeight * that.limitY.top;
+	var y2 = that.canvasHeight * that.limitY.bottom;
+	if(type == 0){
+		return point.x >= x1 && point.x <= x2 && point.y >= y1 && point.y <= y2;
+	}else if(type == 1){
+		return point.x >= x1 && point.x <= x2 && point.y >= y1 && point.y <= y2;
+	}else if(type == 2){
+		return point.x >= x1 && point.x <= x2 && point.y >= y1 && point.y <= y2;
+	}else if(type == 3){
+		return point.x >= x1 && point.x <= x2 && point.y >= y1 && point.y <= y2;
+	}
+
 }
 
 Cropper.prototype.handleStart = function(evt) {
@@ -168,17 +200,37 @@ Cropper.prototype.handleMove = function(evt) {
 		}
 		var deltaX = curMidPoint.pageX - preMidPoint.pageX;
 		var deltaY = curMidPoint.pageY - preMidPoint.pageY;
-		ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
-		ctx.translate(deltaX, deltaY);
-		ctx.drawImage(
-			cropper.img,
-			0, 0,
-			cropper.imgWidth, cropper.imgHeight,
-			cropper.startX, cropper.startY,
-			cropper.imgWidth, cropper.imgHeight
-		);
-		cropper.originX = cropper.originX + deltaX;
-		cropper.originY = cropper.originY + deltaY;
+
+		var nextLeftTop = {
+			x: (cropper.originX + deltaX) * cropper.scale,
+			y: (cropper.originY + deltaY) * cropper.scale
+		};
+		var nextRightTop = {
+			x: (cropper.originX + deltaX + cropper.canvasWidth) * cropper.scale,
+			y: (cropper.originY + deltaY) * cropper.scale
+		};
+		var nextLeftBottom = {
+			x: (cropper.originX + deltaX) * cropper.scale,
+			y: (cropper.originY + deltaY + cropper.canvasHeight) * cropper.scale
+		};
+		var nextRightBottom = {
+			x: (cropper.originX + deltaX + cropper.canvasWidth) * cropper.scale,
+			y: (cropper.originY + deltaY + cropper.canvasHeight) * cropper.scale
+		}
+		if(cropper.inRightArea(nextLeftTop) || cropper.inRightArea(nextRightTop) || cropper.inRightArea(nextLeftBottom) || cropper.inRightArea(nextRightBottom)){
+			console.log('handleMove inRightArea');
+			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
+			ctx.translate(deltaX, deltaY);
+			ctx.drawImage(
+				cropper.img,
+				0, 0,
+				cropper.imgWidth, cropper.imgHeight,
+				cropper.startX, cropper.startY,
+				cropper.imgWidth, cropper.imgHeight
+			);
+			cropper.originX = cropper.originX + deltaX;
+			cropper.originY = cropper.originY + deltaY;
+		}
 		console.log('deltaX:', deltaX, 'deltaY:', deltaY);
 		console.log('cropper.originX:', cropper.originX, 'cropper.originY:', cropper.originY);
 
@@ -217,6 +269,7 @@ Cropper.prototype.handleMove = function(evt) {
 			/*让两个touch点的中点成为坐标原点*/
 			// ctx.translate(translateDeltaX, translateDeltaY);
 			ctx.scale(scale, scale);
+			cropper.scale *= scale;
 			// ctx.drawImage(
 			// 	cropper.img,
 			// 	0, 0,
