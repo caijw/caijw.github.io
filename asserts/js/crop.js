@@ -211,7 +211,6 @@ Cropper.prototype.handleMove = function(evt) {
 			ctx.clearRect(cropper.startX, cropper.startY, cropper.imgWidth, cropper.imgHeight);
 			ctx.translate(translateDeltaX, translateDeltaY);
 			ctx.scale(scale, scale);
-
 			ctx.drawImage(
 				cropper.img,
 				0, 0,
@@ -219,9 +218,7 @@ Cropper.prototype.handleMove = function(evt) {
 				-curMidTouch.x, -curMidTouch.y,
 				cropper.imgWidth, cropper.imgHeight
 			);
-			ctx.scale(1/scale, 1/scale);
 			ctx.translate(-translateDeltaX, -translateDeltaY);
-			ctx.scale(scale, scale);
 
 		}
 
